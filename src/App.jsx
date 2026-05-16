@@ -49,26 +49,7 @@ const MEMORIES = [
   }
 ];
 
-// Interactive Pointer Glow (Follows Finger/Mouse)
-const PointerGlow = () => {
-  const [position, setPosition] = useState({ x: -200, y: -200 });
-  
-  useEffect(() => {
-    const handleMove = (e) => {
-      setPosition({ x: e.clientX, y: e.clientY });
-    };
-    window.addEventListener('pointermove', handleMove);
-    return () => window.removeEventListener('pointermove', handleMove);
-  }, []);
-
-  return (
-    <motion.div 
-      className="fixed top-0 left-0 w-64 h-64 bg-neonPurple/20 rounded-full blur-[80px] pointer-events-none z-0 mix-blend-screen"
-      animate={{ x: position.x - 128, y: position.y - 128 }}
-      transition={{ type: "tween", ease: "easeOut", duration: 0.5 }}
-    />
-  );
-};
+// Interactive Pointer Glow removed for mobile performance
 
 // Advanced Hold-to-Unlock Button
 const HoldButton = ({ onComplete }) => {
@@ -107,7 +88,7 @@ const HoldButton = ({ onComplete }) => {
       onContextMenu={(e) => e.preventDefault()}
       animate={controls}
     >
-      <svg className="absolute inset-0 w-full h-full transform -rotate-90 filter drop-shadow-[0_0_10px_rgba(255,0,127,0.5)]">
+      <svg className="absolute inset-0 w-full h-full transform -rotate-90">
         <circle cx="96" cy="96" r="88" stroke="rgba(255,255,255,0.05)" strokeWidth="2" fill="none" />
         <circle 
           cx="96" 
@@ -128,7 +109,7 @@ const HoldButton = ({ onComplete }) => {
           </linearGradient>
         </defs>
       </svg>
-      <div className="glass w-36 h-36 rounded-full flex flex-col items-center justify-center shadow-[0_0_40px_rgba(255,0,127,0.4)] bg-black/40">
+      <div className="glass w-36 h-36 rounded-full flex flex-col items-center justify-center bg-black/40 shadow-lg">
          <Sparkles className="w-8 h-8 text-neonPink mb-1 animate-pulse" />
          <span className="text-white font-bold tracking-widest text-xs uppercase opacity-80">Hold</span>
          <span className="text-neonBlue text-[10px] mt-0.5 font-bold tracking-widest">to unlock</span>
@@ -151,13 +132,13 @@ const FlipCard = ({ memory }) => {
         initial={false}
         animate={{ rotateY: isFlipped ? 180 : 0 }}
       >
-        <div className="absolute inset-0 backface-hidden glass rounded-3xl flex flex-col items-center justify-center p-6 text-center shadow-lg hover:shadow-[0_0_20px_rgba(255,0,127,0.3)] transition-shadow">
-          <span className="text-5xl mb-4 filter drop-shadow-[0_0_10px_rgba(255,255,255,0.4)]">{memory.icon}</span>
+        <div className="absolute inset-0 backface-hidden glass rounded-3xl flex flex-col items-center justify-center p-6 text-center shadow-md">
+          <span className="text-5xl mb-4" style={{ textShadow: '0 4px 8px rgba(0,0,0,0.5)' }}>{memory.icon}</span>
           <h3 className="text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-neonPink to-neonBlue tracking-wide">{memory.title}</h3>
           <div className="absolute bottom-4 text-[10px] uppercase text-white/30 tracking-widest">Тапни мене</div>
         </div>
-        <div className="absolute inset-0 backface-hidden rotate-y-180 glass rounded-3xl flex items-center justify-center p-6 text-center bg-[#0a0510]/90 border border-neonPink/40 shadow-[0_0_30px_rgba(255,0,127,0.4)]">
-          <p className="text-sm md:text-base font-medium text-white/95 leading-relaxed drop-shadow-md">{memory.text}</p>
+        <div className="absolute inset-0 backface-hidden rotate-y-180 glass rounded-3xl flex items-center justify-center p-6 text-center bg-[#0a0510]/90 border border-neonPink/40 shadow-lg">
+          <p className="text-sm md:text-base font-medium text-white/95 leading-relaxed">{memory.text}</p>
         </div>
       </motion.div>
     </div>
@@ -264,7 +245,8 @@ const VideoItem = ({ src, index, total }) => {
          src={src} 
          loop 
          muted 
-         playsInline 
+         playsInline
+         preload="metadata"
          className="w-full h-full object-cover" 
        />
        {/* Video Overlay Info */}
@@ -289,19 +271,19 @@ const VideoItem = ({ src, index, total }) => {
   );
 };
 
-// Falling Emojis Rain
+// Falling Emojis Rain - Optimized
 const FallingEmojis = () => {
   const [emojis, setEmojis] = useState([]);
 
   useEffect(() => {
-    // Generate emojis
-    const newEmojis = Array.from({ length: 60 }).map((_, i) => ({
+    // Generate fewer emojis for better performance
+    const newEmojis = Array.from({ length: 25 }).map((_, i) => ({
       id: i,
       emoji: ['❤️', '💋', '😘', '✨', '💖', '🎂'][Math.floor(Math.random() * 6)],
       x: Math.random() * 100, // vw
       delay: Math.random() * 3, // start delay
-      duration: 3 + Math.random() * 5, // fall duration
-      size: 20 + Math.random() * 30 // px size
+      duration: 4 + Math.random() * 5, // fall duration
+      size: 16 + Math.random() * 24 // px size
     }));
     setEmojis(newEmojis);
   }, []);
@@ -320,7 +302,7 @@ const FallingEmojis = () => {
             repeat: 1 // repeats once
           }}
           className="absolute"
-          style={{ fontSize: e.size, filter: 'drop-shadow(0px 0px 10px rgba(255,0,127,0.5))' }}
+          style={{ fontSize: e.size, textShadow: '0 0 5px rgba(255,0,127,0.5)' }}
         >
           {e.emoji}
         </motion.div>
@@ -376,7 +358,6 @@ export default function App() {
   if (!started) {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen p-4 text-center bg-[#030005] relative overflow-hidden">
-        <PointerGlow />
         <div className="orb orb-1"></div>
         <div className="orb orb-2"></div>
         <div className="orb orb-3"></div>
@@ -387,13 +368,12 @@ export default function App() {
           transition={{ duration: 1, ease: "easeOut" }}
           className="flex flex-col items-center z-10"
         >
-          <motion.h1 
-            className="text-[120px] leading-none font-black mb-4 bg-clip-text text-transparent bg-gradient-to-br from-neonPink via-neonPurple to-neonBlue drop-shadow-[0_0_30px_rgba(255,0,127,0.8)]"
-            animate={{ textShadow: ["0px 0px 20px #ff007f", "0px 0px 50px #8a2be2", "0px 0px 20px #ff007f"] }}
-            transition={{ duration: 3, repeat: Infinity }}
+          <h1 
+            className="text-[120px] leading-none font-black mb-4 bg-clip-text text-transparent bg-gradient-to-br from-neonPink via-neonPurple to-neonBlue"
+            style={{ textShadow: '0 0 20px rgba(255,0,127,0.5)' }}
           >
             18
-          </motion.h1>
+          </h1>
           <h2 className="text-3xl md:text-5xl font-bold mb-4 text-white tracking-tight drop-shadow-lg">
             З ДНЕМ НАРОДЖЕННЯ,<br/> <span className="text-neonPink italic">КИЦЯ!</span> 🎂
           </h2>
@@ -408,7 +388,6 @@ export default function App() {
   return (
     <div className="min-h-screen pb-32 flex flex-col items-center bg-[#030005] text-white relative overflow-hidden">
       <FallingEmojis />
-      <PointerGlow />
       <div className="orb orb-1"></div>
       <div className="orb orb-2"></div>
       <div className="orb orb-3"></div>
