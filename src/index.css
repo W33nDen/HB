@@ -1,0 +1,111 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800;900&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-[#030005] text-white antialiased;
+    font-family: 'Outfit', sans-serif;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+  }
+}
+
+.glass {
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.glass-pill {
+  background: rgba(15, 15, 20, 0.6);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.perspective-1000 {
+  perspective: 1000px;
+}
+
+.transform-style-3d {
+  transform-style: preserve-3d;
+}
+
+.backface-hidden {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.rotate-y-180 {
+  transform: rotateY(180deg);
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 0px;
+  background: transparent;
+}
+
+/* Glowing Orbs */
+.orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  z-index: 0;
+  pointer-events: none;
+}
+.orb-1 {
+  width: 300px;
+  height: 300px;
+  background: rgba(255, 0, 127, 0.15);
+  top: -10%;
+  left: -20%;
+  animation: floatOrb 15s ease-in-out infinite alternate;
+}
+.orb-2 {
+  width: 400px;
+  height: 400px;
+  background: rgba(138, 43, 226, 0.15);
+  bottom: 20%;
+  right: -20%;
+  animation: floatOrb 20s ease-in-out infinite alternate-reverse;
+}
+.orb-3 {
+  width: 250px;
+  height: 250px;
+  background: rgba(0, 240, 255, 0.1);
+  top: 40%;
+  left: 30%;
+  animation: floatOrb 18s ease-in-out infinite alternate;
+}
+
+@keyframes floatOrb {
+  0% { transform: translate(0, 0) scale(1); }
+  100% { transform: translate(50px, 100px) scale(1.2); }
+}
+
+.glow-border {
+  position: relative;
+}
+.glow-border::before {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  border-radius: inherit;
+  background: linear-gradient(45deg, #ff007f, #8a2be2, #00f0ff);
+  z-index: -1;
+  filter: blur(10px);
+  opacity: 0.7;
+  animation: pulseGlow 3s linear infinite alternate;
+}
+
+@keyframes pulseGlow {
+  0% { filter: blur(8px); opacity: 0.5; }
+  100% { filter: blur(15px); opacity: 1; }
+}
