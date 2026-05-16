@@ -357,9 +357,10 @@ export default function App() {
         <motion.h1 
           initial={{ y: -20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
-          className="text-4xl font-black bg-clip-text text-transparent bg-gradient-to-r from-neonPink to-neonBlue tracking-tighter"
+          className="text-3xl md:text-4xl font-black text-center mb-2 leading-tight tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-white via-neonPink to-neonPurple"
+          style={{ textShadow: '0 0 10px rgba(255,0,127,0.5)' }}
         >
-          BIBA'S <span className="text-white">UNIVERSE</span>
+          З ДНЕМ НАРОДЖЕННЯ,<br/> <span className="text-neonPink italic">КИЦЯ!</span> 🎂
         </motion.h1>
         <motion.p 
           initial={{ y: -10, opacity: 0 }}
