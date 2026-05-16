@@ -1,7 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence, useAnimation } from 'framer-motion';
 import { Camera, Star, MessageCircle, Heart, Sparkles } from 'lucide-react';
-import confetti from 'canvas-confetti';
 const BASE = import.meta.env.BASE_URL;
 
 const IMAGES = [
@@ -195,7 +194,7 @@ const SwipeGallery = () => {
               onDragEnd={isTop ? handleDragEnd : undefined}
               whileDrag={{ scale: 1.05, cursor: 'grabbing', rotate: 0 }}
             >
-              <img src={src} alt="Gallery" className="w-full h-full object-cover pointer-events-none" />
+              <img src={src} alt="Gallery" loading={index > 0 ? "lazy" : "eager"} className="w-full h-full object-cover pointer-events-none" />
               <div className="absolute inset-0 bg-gradient-to-t from-[#030005]/90 via-transparent to-transparent pointer-events-none" />
             </motion.div>
           );
@@ -271,75 +270,20 @@ const VideoItem = ({ src, index, total }) => {
   );
 };
 
-// Falling Emojis Rain - Optimized
-const FallingEmojis = () => {
-  const [emojis, setEmojis] = useState([]);
-
-  useEffect(() => {
-    // Generate fewer emojis for better performance
-    const newEmojis = Array.from({ length: 25 }).map((_, i) => ({
-      id: i,
-      emoji: ['❤️', '💋', '😘', '✨', '💖', '🎂'][Math.floor(Math.random() * 6)],
-      x: Math.random() * 100, // vw
-      delay: Math.random() * 3, // start delay
-      duration: 4 + Math.random() * 5, // fall duration
-      size: 16 + Math.random() * 24 // px size
-    }));
-    setEmojis(newEmojis);
-  }, []);
-
-  return (
-    <div className="fixed inset-0 pointer-events-none z-[100] overflow-hidden">
-      {emojis.map((e) => (
-        <motion.div
-          key={e.id}
-          initial={{ y: -100, x: `${e.x}vw`, opacity: 1, rotate: 0 }}
-          animate={{ y: '120vh', opacity: [1, 1, 0], rotate: 360 }}
-          transition={{
-            duration: e.duration,
-            delay: e.delay,
-            ease: "linear",
-            repeat: 1 // repeats once
-          }}
-          className="absolute"
-          style={{ fontSize: e.size, textShadow: '0 0 5px rgba(255,0,127,0.5)' }}
-        >
-          {e.emoji}
-        </motion.div>
-      ))}
-    </div>
-  );
-};
+// Removed FallingEmojis component for mobile performance
 
 export default function App() {
   const [started, setStarted] = useState(false);
   const [activeTab, setActiveTab] = useState('gallery');
   const [hearts, setHearts] = useState([]);
 
+  useEffect(() => {
+    // Preload first image for smooth transition
+    const img = new Image();
+    img.src = IMAGES[0];
+  }, []);
+
   const handleStart = () => {
-    try {
-      const heart = confetti.shapeFromText({ text: '❤️' });
-      const kiss = confetti.shapeFromText({ text: '💋' });
-      confetti({
-        particleCount: 150,
-        spread: 100,
-        startVelocity: 50,
-        origin: { y: 0.6 },
-        shapes: [heart, kiss, 'circle'],
-        scalar: 2,
-        disableForReducedMotion: true
-      });
-    } catch(e) {
-      confetti({
-        particleCount: 250,
-        spread: 120,
-        startVelocity: 40,
-        origin: { y: 0.6 },
-        colors: ['#ff007f', '#8a2be2', '#00f0ff', '#ffffff'],
-        disableForReducedMotion: true
-      });
-    }
-    
     if (navigator.vibrate) navigator.vibrate([100, 50, 100, 50, 200]);
     setStarted(true);
   };
@@ -387,7 +331,6 @@ export default function App() {
 
   return (
     <div className="min-h-screen pb-32 flex flex-col items-center bg-[#030005] text-white relative overflow-hidden">
-      <FallingEmojis />
       <div className="orb orb-1"></div>
       <div className="orb orb-2"></div>
       <div className="orb orb-3"></div>
