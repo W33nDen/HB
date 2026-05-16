@@ -270,20 +270,34 @@ const VideoItem = ({ src, index, total }) => {
   );
 };
 
-// Removed FallingEmojis component for mobile performance
-
 export default function App() {
   const [started, setStarted] = useState(false);
   const [activeTab, setActiveTab] = useState('gallery');
   const [hearts, setHearts] = useState([]);
+  const iframeRef = useRef(null);
+  const [widget, setWidget] = useState(null);
 
   useEffect(() => {
     // Preload first image for smooth transition
     const img = new Image();
     img.src = IMAGES[0];
+
+    // Load SoundCloud Widget API
+    const script = document.createElement('script');
+    script.src = 'https://w.soundcloud.com/player/api.js';
+    script.onload = () => {
+      if (iframeRef.current) {
+        const scWidget = window.SC.Widget(iframeRef.current);
+        setWidget(scWidget);
+      }
+    };
+    document.body.appendChild(script);
   }, []);
 
   const handleStart = () => {
+    if (widget) {
+      widget.play();
+    }
     if (navigator.vibrate) navigator.vibrate([100, 50, 100, 50, 200]);
     setStarted(true);
   };
@@ -299,54 +313,57 @@ export default function App() {
     }, 1000);
   };
 
-  if (!started) {
-    return (
-      <div className="flex flex-col items-center justify-center min-h-screen p-4 text-center bg-[#030005] relative overflow-hidden">
-        <div className="orb orb-1"></div>
-        <div className="orb orb-2"></div>
-        <div className="orb orb-3"></div>
-
-        <motion.div
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 1, ease: "easeOut" }}
-          className="flex flex-col items-center z-10"
-        >
-          <h1 
-            className="text-[120px] leading-none font-black mb-4 bg-clip-text text-transparent bg-gradient-to-br from-neonPink via-neonPurple to-neonBlue"
-            style={{ textShadow: '0 0 20px rgba(255,0,127,0.5)' }}
-          >
-            18
-          </h1>
-          <h2 className="text-3xl md:text-5xl font-bold mb-4 text-white tracking-tight drop-shadow-lg">
-            З ДНЕМ НАРОДЖЕННЯ,<br/> <span className="text-neonPink italic">КИЦЯ!</span> 🎂
-          </h2>
-          <p className="text-white/50 text-sm tracking-widest uppercase mb-12">Iryna's Magic Portal</p>
-          
-          <HoldButton onComplete={handleStart} />
-        </motion.div>
-      </div>
-    );
-  }
-
   return (
     <div className="min-h-screen pb-32 flex flex-col items-center bg-[#030005] text-white relative overflow-hidden">
       <div className="orb orb-1"></div>
       <div className="orb orb-2"></div>
       <div className="orb orb-3"></div>
 
+      <AnimatePresence>
+        {!started && (
+          <motion.div 
+            key="landing"
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.5 }}
+            className="absolute inset-0 z-[100] flex flex-col items-center justify-center bg-[#030005]"
+          >
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 1, ease: "easeOut" }}
+              className="flex flex-col items-center z-10"
+            >
+              <h1 
+                className="text-[120px] leading-none font-black mb-4 bg-clip-text text-transparent bg-gradient-to-br from-neonPink via-neonPurple to-neonBlue"
+                style={{ textShadow: '0 0 20px rgba(255,0,127,0.5)' }}
+              >
+                18
+              </h1>
+              <h2 className="text-3xl md:text-5xl font-bold mb-4 text-white tracking-tight drop-shadow-lg text-center">
+                З ДНЕМ НАРОДЖЕННЯ,<br/> <span className="text-neonPink italic">КИЦЯ!</span> 🎂
+              </h2>
+              <p className="text-lg md:text-xl text-white/80 mb-12 max-w-sm leading-relaxed text-center">
+                Я зібрав для тебе наші найтепліші спогади. 
+              </p>
+
+              <HoldButton onComplete={handleStart} />
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* Hero Section */}
-      <header className="w-full pt-12 pb-6 px-4 relative z-10 flex flex-col items-center">
+      <header className="w-full pt-10 pb-6 flex flex-col items-center z-10 relative">
         <motion.h1 
           initial={{ y: -20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
-          className="text-3xl md:text-4xl font-black text-center mb-2 leading-tight tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-white via-neonPink to-neonPurple drop-shadow-lg"
+          className="text-4xl font-black bg-clip-text text-transparent bg-gradient-to-r from-neonPink to-neonBlue tracking-tighter"
         >
-          З ДНЕМ НАРОДЖЕННЯ! 🎂
+          BIBA'S <span className="text-white">UNIVERSE</span>
         </motion.h1>
         <motion.p 
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
+          initial={{ y: -10, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 0.2 }}
           className="text-neonBlue font-semibold tracking-widest text-[10px] uppercase mb-6"
         >
@@ -362,6 +379,7 @@ export default function App() {
         >
           <div className="glass rounded-2xl overflow-hidden relative z-10 bg-[#0a0510]/80">
             <iframe 
+              ref={iframeRef}
               width="100%" 
               height="166" 
               scrolling="no" 
