@@ -2,22 +2,23 @@ import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence, useAnimation } from 'framer-motion';
 import { Camera, Star, MessageCircle, Heart, Sparkles } from 'lucide-react';
 import confetti from 'canvas-confetti';
+const BASE = import.meta.env.BASE_URL;
 
 const IMAGES = [
-  './img/2911a4f4-3ecd-4e0f-8e99-c17614c30466.jpg',
-  './img/5ea8cbba-755a-4c5a-936c-3c2f35733334.jpg',
-  './img/d0a37efe-211a-4781-ab53-d9d14aba05ff.jpg',
-  './img/photo_2026-01-01_23-41-11.jpg',
-  './img/photo_2026-05-16_21-00-38.jpg',
-  './img/photo_2026-05-16_21-03-32.jpg',
-  './img/photo_2026-05-16_21-04-20.jpg'
+  `${BASE}img/2911a4f4-3ecd-4e0f-8e99-c17614c30466.jpg`,
+  `${BASE}img/5ea8cbba-755a-4c5a-936c-3c2f35733334.jpg`,
+  `${BASE}img/d0a37efe-211a-4781-ab53-d9d14aba05ff.jpg`,
+  `${BASE}img/photo_2026-01-01_23-41-11.jpg`,
+  `${BASE}img/photo_2026-05-16_21-00-38.jpg`,
+  `${BASE}img/photo_2026-05-16_21-03-32.jpg`,
+  `${BASE}img/photo_2026-05-16_21-04-20.jpg`
 ];
 
 const VIDEOS = [
-  './img/IMG_5539.MOV',
-  './img/IMG_5176.MOV',
-  './img/IMG_5532.MOV',
-  './img/video.mp4'
+  `${BASE}img/IMG_5539.MOV`,
+  `${BASE}img/IMG_5176.MOV`,
+  `${BASE}img/IMG_5532.MOV`,
+  `${BASE}img/video.mp4`
 ];
 
 const MEMORIES = [
